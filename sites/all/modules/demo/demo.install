@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the render_example module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function demo_install() {
+  //global $conf;
+  //if(function_exists('dsm')) dsm($conf);
+  //else die("No dsm function available!!!");
+}
+
+function demo_enable() {
+  //if(function_exists('dsm')) dsm($GLOBALS);
+  //else die("No dsm function available!!!");
+}

@@ -1,0 +1,3 @@
+name = Safeword
+description = provides a text field with both machine and human-readable version of a string
+core = 7.x

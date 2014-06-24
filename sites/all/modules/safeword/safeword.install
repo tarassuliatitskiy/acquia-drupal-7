@@ -1,0 +1,19 @@
+<?php
+/**
+ * @file
+ * Install, update, and uninstall functions for the field_example module.
+ */
+
+function safeword_field_schema($field) {
+  $columns = array(
+    'human' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
+    'machine' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
+  );
+  $indexes = array(
+    'machine' => array('machine'),
+  );
+  return array(
+    'columns' => $columns,
+    'indexes' => $indexes,
+  );
+}
