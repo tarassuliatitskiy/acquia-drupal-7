@@ -1,0 +1,23 @@
+<?
+/**
+ * @file
+ * Install, update, and uninstall functions for the field_example module.
+ */
+
+function safeword_field_info() {
+  return array(
+    'safeword' => array(
+      'label' => t('Text with machine name'),
+      'description' => t('A field with human readable text'),
+      'default_widget' => 'safeword_machine_name',
+      'default_formatter' => 'safeword_human',
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_is_empty
+ */
+function safeword_field_is_empty($item, $field) {
+  return (empty($item['human']) && empty($item['machine']));
+}

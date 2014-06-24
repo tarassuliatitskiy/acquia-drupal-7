@@ -1,0 +1,140 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: saratsubolg
+ * Date: 23.06.14
+ * Time: 16:26
+ */
+
+function demo_menu() {
+    $items['demo'] = array(
+        // The title - do NOT use t() as t() is called automatically.
+        'title' => 'Demo Menu',
+        'description' => 'This menu entry will not appear and the page will not be accessible without the "access protected menu example" permission.',
+        'page callback' => '_menu_demo_main_page',
+        'page arguments' => array(t('dfg')),
+
+        // For a permissioned menu entry, we provide an access callback which
+        // determines whether the current user should have access. The default is
+        // user_access(), which we'll use in this case. Since it's the default,
+        // we don't even have to enter it.
+        // 'access callback' => 'user_access',
+        //
+        // The 'access arguments' are passed to the 'access callback' to help it
+        // do its job. In the case of user_access(), we need to pass a permission
+        // as the first argument.
+        'access arguments' => array('access content'),
+        'expanded' => TRUE,
+        // The optional weight element tells how to order the submenu items.
+        // Higher weights are "heavier", dropping to the bottom of the menu.
+        'weight' => 10,
+    );
+
+    $items['demo/tabs'] = array(
+        // 'type' => MENU_NORMAL_ITEM,  // Not necessary since this is the default.
+        'title' => 'Tabs',
+        'description' => 'Shows how to create primary and secondary tabs',
+        'page callback' => '_demo_menu_page',
+        'page arguments' => array(t('This is the "tabs" menu entry.')),
+        'access callback' => TRUE,
+        'weight' => 30,
+    );
+    $items['demo/tabs/default'] = array(
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'title' => 'Default primary tab',
+        'weight' => 1,
+    );
+    foreach (array(t('second') => 2, t('third') => 3, t('fourth') => 4) as $tabname => $weight) {
+        $items["demo/tabs/$tabname"] = array(
+            'type' => MENU_LOCAL_TASK,
+            'title' => $tabname,
+            'page callback' => '_demo_tabs_page',
+            'page arguments' => array(t('This is the tab "@tabname" in the "basic tabs" example', array('@tabname' => $tabname))),
+            'access callback' => TRUE,
+
+            // The weight property overrides the default alphabetic ordering of menu
+            // entries, allowing us to get our tabs in the order we want.
+            'weight' => $weight,
+        );
+    }
+    $items['demo/alternate_menu'] = array(
+        'title' => 'Demo: Menu in alternate menu',
+
+        // Machine name of the menu in which the link should appear.
+        'menu_name' => 'user-menu',
+        'page callback' => '_alternate_user_menu',
+        'page arguments' => array(t('This will be in the Primary Links menu instead of the default Navigation menu')),
+        'access callback' => TRUE,
+    );
+    return $items;
+}
+
+/**
+ *  Page callback for the demo menu
+ */
+function _menu_demo_main_page ($arg = NULL) {
+  $output = '<div>' . $arg . '</div>';
+  $renderable_array['description'] = array(
+      '#type' => 'markup',
+      '#markup' => t('This example shows what render arrays look like in the building of a page. It will not work unless the user running it has the "access devel information" privilege. It shows both the actual arrays used to build a page or block and also the capabilities of altering the page late in its lifecycle. Link <a href="!link">Go to google</a>',array("!link" => "http://google.com")),
+  );
+  return $output . drupal_render($renderable_array);
+}
+
+function _demo_menu_page ($content = NULL, $arg1 = NULL, $arg2 = NULL) {
+  $output = array();
+  $output['elem'] = array(
+    '#type' => 'item',
+    '#title' => t('Some content with type #item'),
+    '#markup' => '<div>Content of custom type #item</div>',
+    '#prefix' => '<div class="some-cust-class">',
+    '#suffix' => '</div>',
+  );
+  return drupal_render($output);
+}
+
+function _demo_tabs_page ($content = '') {
+  $output = !empty($content) ? $content : 'No content for this tab';
+  return $output;
+}
+
+function _alternate_user_menu ($arg = '') {
+  $output = (!empty($arg)) ? $arg : '';
+  $items = array(
+    l("User main page", "admin/people/permissions"),
+    l("User list page", "admin/people"),
+    l("Config page", "admin/config"),
+  );
+
+  $content['content'] = array(
+    '#type' => 'item',
+    '#title' => t('A title of element <a href="!link">Go to admin config</a><br> An argument of the element - @arg', array("!link" => "admin/config", "@arg" => $output)),
+    '#markup' => theme('item_list', $items),
+  );
+  $content['content_theme'] = array(
+    '#items' => $items,
+    '#theme' => 'item_list',
+  );
+  $content['content_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('My fieldset'),
+    'example content' => array (
+      '#theme' => 'item_list','#items' => array(t('Example item'))
+    ),
+    '#attributes' => array (
+      'class' => array(
+        'collapsible', 'collapsed'
+      )
+    )
+  );
+
+  $rand_int = rand(1, 2);
+  $content['content_fieldset']['markup'] = array(
+    '#type' => 'markup',
+    '#markup' => format_plural($rand_int,
+        'Changed the content type of 1 post from %old-type to %new-type.',
+        'Changed the content type of @count posts from %old-type to %new-type.',
+        array('%old-type' => "OLD TYPE", '%new-type' => "NEW TYPE")),
+  );
+  return drupal_render($content);
+}

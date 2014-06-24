@@ -1,0 +1,4 @@
+name = Demo Module
+description = Just playing around with my custom Demo module
+core = 7.x
+package = Development
