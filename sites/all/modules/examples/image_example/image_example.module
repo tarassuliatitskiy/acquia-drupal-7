@@ -199,7 +199,11 @@ function image_example_style_flush($style) {
  * If you add an effect to a style through this hook and the user attempts to
  * remove the effect it will immediatly be re-applied.
  */
+<<<<<<< HEAD
 function image_example_image_styles_alter(&$styles) {dsm($styles);
+=======
+function image_example_image_styles_alter(&$styles) {
+>>>>>>> origin/master
   // The $styles paramater is an array of image style arrays keyed by style
   // name. You can check to see if a style has been overriden by checking the
   // $styles['stylename']['storage'] property.
